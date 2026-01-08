@@ -8,6 +8,7 @@ import { DesignFormData } from "@/types/design";
 import { Download, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const initialFormData: DesignFormData = {
   theme: "motivation",
@@ -46,33 +47,56 @@ export default function Index() {
     }
 
     setIsGenerating(true);
+    setDesignImage(null);
     
-    // Simulate AI generation with a placeholder
-    // In production, this would call an AI image generation API
-    await new Promise((resolve) => setTimeout(resolve, 2500));
-    
-    // Using a generated design placeholder
-    // This represents where the AI-generated design would appear
-    const placeholderDesigns = [
-      "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=400&h=400&fit=crop",
-      "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400&h=400&fit=crop",
-      "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=400&h=400&fit=crop",
-    ];
-    
-    setDesignImage(placeholderDesigns[Math.floor(Math.random() * placeholderDesigns.length)]);
-    setIsGenerating(false);
-    
-    toast({
-      title: "Design generated!",
-      description: "Your T-shirt design has been created successfully.",
-    });
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-tshirt-design', {
+        body: formData
+      });
+
+      if (error) {
+        console.error("Edge function error:", error);
+        throw new Error(error.message || "Failed to generate design");
+      }
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      if (data?.image) {
+        setDesignImage(data.image);
+        toast({
+          title: "Design generated!",
+          description: "Your 3D T-shirt design has been created successfully.",
+        });
+      } else {
+        throw new Error("No image was returned");
+      }
+    } catch (error) {
+      console.error("Generation error:", error);
+      toast({
+        title: "Generation failed",
+        description: error instanceof Error ? error.message : "Failed to generate design. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleDownload = () => {
     if (designImage) {
+      // Create a download link for the base64 image
+      const link = document.createElement('a');
+      link.href = designImage;
+      link.download = `tshirt-design-${Date.now()}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
       toast({
         title: "Download started",
-        description: "Your design is being prepared for download.",
+        description: "Your design is being downloaded.",
       });
     }
   };
@@ -95,7 +119,7 @@ export default function Index() {
                 Create Your Design
               </h2>
               <p className="text-muted-foreground">
-                Customize every aspect of your T-shirt design
+                AI-powered 3D T-shirt design generation
               </p>
             </div>
 
@@ -121,7 +145,7 @@ export default function Index() {
                   Live Preview
                 </h2>
                 <p className="text-muted-foreground">
-                  See your design on the T-shirt
+                  See your 3D design on the T-shirt
                 </p>
               </div>
               
@@ -152,7 +176,7 @@ export default function Index() {
               <ul className="text-xs text-muted-foreground space-y-1">
                 <li>• Keep text readable from a distance</li>
                 <li>• Use contrasting colors for visibility</li>
-                <li>• Simple designs often have more impact</li>
+                <li>• 3D effects work best with bold typography</li>
                 <li>• Consider the T-shirt color when choosing palette</li>
               </ul>
             </div>
