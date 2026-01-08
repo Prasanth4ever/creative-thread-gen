@@ -1,12 +1,12 @@
-import { Shirt } from "lucide-react";
+
 
 export function Header() {
   return (
     <header className="py-6 px-4 border-b border-border">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-orange-400 flex items-center justify-center">
-            <Shirt className="w-5 h-5 text-primary-foreground" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-orange-400 flex items-center justify-center text-lg font-bold text-primary-foreground">
+            TD
           </div>
           <div>
             <h1 className="text-xl font-display font-bold gradient-text">
