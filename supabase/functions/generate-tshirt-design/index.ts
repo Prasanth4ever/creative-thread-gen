@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,13 +13,61 @@ serve(async (req) => {
   }
 
   try {
+    // Validate authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      console.error("No authorization header provided");
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Please sign in to generate designs' }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
+    
+    if (claimsError || !claimsData?.claims) {
+      console.error("Invalid token:", claimsError?.message);
+      return new Response(
+        JSON.stringify({ error: 'Invalid token - Please sign in again' }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const userId = claimsData.claims.sub;
+    console.log("Authenticated user:", userId);
+
     const { theme, mainIdea, targetAudience, mood, artStyle, colorPalette, typography, tshirtColor } = await req.json();
+
+    // Basic input validation
+    if (!mainIdea || typeof mainIdea !== 'string' || mainIdea.trim().length === 0) {
+      return new Response(
+        JSON.stringify({ error: 'Main idea is required' }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (mainIdea.length > 500) {
+      return new Response(
+        JSON.stringify({ error: 'Main idea is too long (max 500 characters)' }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       console.error("LOVABLE_API_KEY is not configured");
       throw new Error("LOVABLE_API_KEY is not configured");
     }
+
+    // Sanitize inputs for prompt construction
+    const sanitize = (str: string | undefined) => (str || '').replace(/[<>]/g, '').slice(0, 100);
 
     // Build prompt for a single realistic T-shirt product photograph
     const designPrompt = `Generate ONE single realistic T-shirt product photograph.
@@ -43,17 +92,17 @@ PRODUCT PHOTOGRAPHY REQUIREMENTS:
 - Modern regular fit silhouette
 - High resolution output
 
-T-SHIRT COLOR: ${tshirtColor}
+T-SHIRT COLOR: ${sanitize(tshirtColor)}
 
 PRINTED DESIGN ON THE SHIRT:
 The following design must be printed directly on the chest area of this T-shirt:
-- Theme: ${theme}
-- Main concept/text: "${mainIdea}"
-- Target audience: ${targetAudience}
-- Mood & style: ${mood}
-- Art style: ${artStyle}
-- Color palette: ${colorPalette}
-- Typography: ${typography}
+- Theme: ${sanitize(theme)}
+- Main concept/text: "${sanitize(mainIdea)}"
+- Target audience: ${sanitize(targetAudience)}
+- Mood & style: ${sanitize(mood)}
+- Art style: ${sanitize(artStyle)}
+- Color palette: ${sanitize(colorPalette)}
+- Typography: ${sanitize(typography)}
 
 PRINT REQUIREMENTS:
 - Design printed directly on the fabric chest area
@@ -74,7 +123,7 @@ ABSOLUTELY AVOID:
 OUTPUT: A single standalone T-shirt product photograph, like you would see on an e-commerce website.`;
 
 
-    console.log("Generating T-shirt design with prompt:", designPrompt);
+    console.log("Generating T-shirt design for user:", userId);
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -115,7 +164,7 @@ OUTPUT: A single standalone T-shirt product photograph, like you would see on an
     }
 
     const data = await response.json();
-    console.log("AI response received successfully");
+    console.log("AI response received successfully for user:", userId);
 
     // Extract the generated image from the response
     const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;

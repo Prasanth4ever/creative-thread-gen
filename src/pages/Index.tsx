@@ -1,13 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { DesignForm } from "@/components/DesignForm";
 import { ExamplePrompts } from "@/components/ExamplePrompts";
 import { TshirtMockup } from "@/components/TshirtMockup";
 import { GeneratedPrompt } from "@/components/GeneratedPrompt";
 import { DesignFormData } from "@/types/design";
-import { Download, RefreshCw } from "lucide-react";
+import { Download, RefreshCw, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
 const initialFormData: DesignFormData = {
@@ -27,6 +29,8 @@ export default function Index() {
   const [designImage, setDesignImage] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
+  const { user, signOut, loading } = useAuth();
+  const navigate = useNavigate();
 
   const handleFormChange = (data: Partial<DesignFormData>) => {
     setFormData((prev) => ({ ...prev, ...data }));
@@ -37,7 +41,36 @@ export default function Index() {
     setDesignImage(null);
   };
 
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth');
+  };
+
+  // Redirect to auth if not logged in
+  if (!loading && !user) {
+    navigate('/auth');
+    return null;
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   const handleGenerate = async () => {
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to generate designs.",
+        variant: "destructive",
+      });
+      navigate('/auth');
+      return;
+    }
+
     if (!formData.mainIdea.trim()) {
       toast({
         title: "Missing quote",
@@ -109,7 +142,7 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header user={user} onSignOut={handleSignOut} />
       
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
