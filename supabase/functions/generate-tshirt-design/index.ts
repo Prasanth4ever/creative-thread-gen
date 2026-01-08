@@ -45,7 +45,16 @@ serve(async (req) => {
 
     const { theme, mainIdea, targetAudience, mood, artStyle, colorPalette, typography, tshirtColor } = await req.json();
 
-    // Basic input validation
+    // Valid dropdown values (must match frontend options)
+    const validThemes = ['motivation', 'anime', 'streetwear', 'sarcasm', 'fitness', 'gaming', 'minimalist', 'vintage', 'tech', 'nature'];
+    const validAudiences = ['college students', 'gym lovers', 'programmers', 'general youth', 'gamers', 'artists', 'entrepreneurs'];
+    const validMoods = ['minimalist', 'bold', 'aesthetic', 'funny', 'dark', 'vintage', 'playful', 'edgy'];
+    const validArtStyles = ['flat illustration', 'line art', 'vector art', 'cartoon', 'cyberpunk', 'retro', 'abstract'];
+    const validColorPalettes = ['black & white', 'pastel', 'neon', 'monochrome', 'earth tones', 'black, white, red', 'white and yellow', 'blue gradient'];
+    const validTypography = ['handwritten', 'graffiti', 'bold sans-serif', 'retro font', 'rounded playful', 'modern minimal', 'gothic'];
+    const validTshirtColors = ['black', 'white', 'navy', 'charcoal', 'maroon'];
+
+    // Validate mainIdea
     if (!mainIdea || typeof mainIdea !== 'string' || mainIdea.trim().length === 0) {
       return new Response(
         JSON.stringify({ error: 'Main idea is required' }),
@@ -60,14 +69,76 @@ serve(async (req) => {
       );
     }
 
+    // Validate dropdown fields against allowlists
+    if (theme && !validThemes.includes(theme)) {
+      console.warn("Invalid theme value received:", theme);
+      return new Response(
+        JSON.stringify({ error: 'Invalid theme selected' }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (targetAudience && !validAudiences.includes(targetAudience)) {
+      console.warn("Invalid audience value received:", targetAudience);
+      return new Response(
+        JSON.stringify({ error: 'Invalid target audience selected' }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (mood && !validMoods.includes(mood)) {
+      console.warn("Invalid mood value received:", mood);
+      return new Response(
+        JSON.stringify({ error: 'Invalid mood selected' }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (artStyle && !validArtStyles.includes(artStyle)) {
+      console.warn("Invalid art style value received:", artStyle);
+      return new Response(
+        JSON.stringify({ error: 'Invalid art style selected' }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (colorPalette && !validColorPalettes.includes(colorPalette)) {
+      console.warn("Invalid color palette value received:", colorPalette);
+      return new Response(
+        JSON.stringify({ error: 'Invalid color palette selected' }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (typography && !validTypography.includes(typography)) {
+      console.warn("Invalid typography value received:", typography);
+      return new Response(
+        JSON.stringify({ error: 'Invalid typography selected' }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (tshirtColor && !validTshirtColors.includes(tshirtColor)) {
+      console.warn("Invalid t-shirt color value received:", tshirtColor);
+      return new Response(
+        JSON.stringify({ error: 'Invalid t-shirt color selected' }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       console.error("LOVABLE_API_KEY is not configured");
-      throw new Error("LOVABLE_API_KEY is not configured");
+      throw new Error("Configuration error");
     }
 
-    // Sanitize inputs for prompt construction
-    const sanitize = (str: string | undefined) => (str || '').replace(/[<>]/g, '').slice(0, 100);
+    // Enhanced sanitization for prompt construction
+    const sanitize = (str: string | undefined) => 
+      (str || '')
+        .replace(/[<>"'`\\]/g, '')
+        .replace(/[\r\n]+/g, ' ')
+        .trim()
+        .slice(0, 100);
 
     // Build prompt for a single realistic T-shirt product photograph
     const designPrompt = `Generate ONE single realistic T-shirt product photograph.
@@ -184,10 +255,10 @@ OUTPUT: A single standalone T-shirt product photograph, like you would see on an
     );
 
   } catch (error) {
-    console.error("Error generating T-shirt design:", error);
+    console.error("[Internal] Error generating T-shirt design:", error);
     return new Response(
       JSON.stringify({ 
-        error: error instanceof Error ? error.message : "Failed to generate design" 
+        error: 'Unable to generate design. Please try again.' 
       }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
