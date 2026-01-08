@@ -20,16 +20,33 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // Build a detailed prompt for standalone design artwork (no t-shirt)
-    const designPrompt = `Create a standalone T-shirt print design artwork ONLY - NO T-SHIRT in the image.
+    // Build prompt for a single realistic T-shirt product photograph
+    const designPrompt = `Generate ONE single realistic T-shirt product photograph.
 
-CRITICAL - WHAT TO GENERATE:
-- Generate ONLY the design/artwork itself
-- This is the graphic that will be printed on a t-shirt
-- NO t-shirt, NO fabric, NO clothing in the image
-- Just the isolated design on a clean transparent or solid background
+CRITICAL RULES - READ CAREFULLY:
+- Generate exactly ONE T-shirt as a product photo
+- The T-shirt IS the product, NOT a logo or icon
+- Do NOT place a T-shirt image inside another T-shirt
+- Do NOT create a T-shirt outline with a design inside it
+- Do NOT nest, frame, or repeat the T-shirt shape
+- NEVER show a T-shirt as a logo, icon, or symbol
 
-DESIGN SPECIFICATIONS:
+PRODUCT PHOTOGRAPHY REQUIREMENTS:
+- Photorealistic cotton fabric with visible texture
+- Natural folds, wrinkles, and fabric draping
+- Visible stitching on collar, sleeves, and hem
+- Realistic round neck collar with ribbed texture
+- Soft professional studio lighting
+- Real e-commerce product photography look
+- Front-facing single T-shirt view
+- Clean dark or neutral gradient background
+- Modern regular fit silhouette
+- High resolution output
+
+T-SHIRT COLOR: ${tshirtColor}
+
+PRINTED DESIGN ON THE SHIRT:
+The following design must be printed directly on the chest area of this T-shirt:
 - Theme: ${theme}
 - Main concept/text: "${mainIdea}"
 - Target audience: ${targetAudience}
@@ -38,23 +55,23 @@ DESIGN SPECIFICATIONS:
 - Color palette: ${colorPalette}
 - Typography: ${typography}
 
-DESIGN REQUIREMENTS:
-- Bold, centered composition
-- Professional graphic design quality
-- Clean edges suitable for printing
-- High contrast and readable from a distance
-- Balanced layout with strong visual hierarchy
-- Typography should be bold and impactful
-- Colors optimized for ${tshirtColor} t-shirt background
+PRINT REQUIREMENTS:
+- Design printed directly on the fabric chest area
+- Print follows the natural fabric folds and curves
+- Colors slightly muted like real screen-print ink on cotton
+- No borders, no background box around the print
+- No poster effect or sticker appearance
+- Print integrates naturally with the fabric texture
 
-TECHNICAL SPECS:
-- Square or slightly vertical aspect ratio
-- Clean background (transparent, white, or solid color)
-- High resolution, print-ready quality
-- No borders, frames, or mockup elements
-- Isolated artwork only
+ABSOLUTELY AVOID:
+- T-shirt inside T-shirt
+- Logo or icon of a T-shirt
+- Outline or silhouette of T-shirt as design element
+- Nested objects or picture-in-picture
+- Mockup template appearance
+- Flat vector graphics
 
-DO NOT include any t-shirt, fabric, clothing, mannequin, or mockup. Generate ONLY the graphic design artwork that would be printed on a shirt.`;
+OUTPUT: A single standalone T-shirt product photograph, like you would see on an e-commerce website.`;
 
 
     console.log("Generating T-shirt design with prompt:", designPrompt);
