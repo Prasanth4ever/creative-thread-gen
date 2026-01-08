@@ -20,27 +20,16 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // Build a detailed prompt for realistic photographed T-shirt product image
-    const designPrompt = `Generate a highly realistic T-shirt product photograph, NOT a flat mockup or illustration.
+    // Build a detailed prompt for standalone design artwork (no t-shirt)
+    const designPrompt = `Create a standalone T-shirt print design artwork ONLY - NO T-SHIRT in the image.
 
-PRODUCT PHOTOGRAPHY REQUIREMENTS:
-- Real photographed cotton fabric with natural folds, wrinkles, and fabric texture
-- Visible stitching details on collar, sleeves, and hem
-- Realistic round neck collar shape with ribbed texture
-- Soft cotton fabric with matte finish appearance
-- Natural fabric creases and draping
-- Studio product photography lighting with soft shadows
-- Clean dark or neutral gradient background
-- Camera angle: straight front view with slight 3D perspective
-- Professional e-commerce product photo quality
-- High resolution with realistic shadows and highlights
+CRITICAL - WHAT TO GENERATE:
+- Generate ONLY the design/artwork itself
+- This is the graphic that will be printed on a t-shirt
+- NO t-shirt, NO fabric, NO clothing in the image
+- Just the isolated design on a clean transparent or solid background
 
-T-SHIRT SPECIFICATIONS:
-- T-shirt color: ${tshirtColor}
-- Fit: modern regular fit
-- Style: classic crew neck
-
-PRINTED DESIGN ON SHIRT:
+DESIGN SPECIFICATIONS:
 - Theme: ${theme}
 - Main concept/text: "${mainIdea}"
 - Target audience: ${targetAudience}
@@ -49,24 +38,24 @@ PRINTED DESIGN ON SHIRT:
 - Color palette: ${colorPalette}
 - Typography: ${typography}
 
-CRITICAL PRINT RULES:
-- Design must be printed directly on the fabric using realistic screen-print/DTG printing style
-- Print should slightly blend with the fabric texture
-- Print should follow and curve naturally with the fabric folds
-- Colors should be slightly muted to match real ink on fabric
-- NO poster-like or sticker-like appearance
-- NO sharp rectangular edges around the design
-- NO floating poster effect
-- NO flat vector mockup look
-- Design should look like it was actually printed on real cotton
+DESIGN REQUIREMENTS:
+- Bold, centered composition
+- Professional graphic design quality
+- Clean edges suitable for printing
+- High contrast and readable from a distance
+- Balanced layout with strong visual hierarchy
+- Typography should be bold and impactful
+- Colors optimized for ${tshirtColor} t-shirt background
 
-DESIGN PLACEMENT:
-- Bold, centered on the chest area
-- Well balanced and clearly readable
-- Typography looks professionally screen-printed
-- Design integrates naturally with the shirt fabric
+TECHNICAL SPECS:
+- Square or slightly vertical aspect ratio
+- Clean background (transparent, white, or solid color)
+- High resolution, print-ready quality
+- No borders, frames, or mockup elements
+- Isolated artwork only
 
-Generate a photorealistic product image that looks like an actual e-commerce product photo taken in a professional studio.`;
+DO NOT include any t-shirt, fabric, clothing, mannequin, or mockup. Generate ONLY the graphic design artwork that would be printed on a shirt.`;
+
 
     console.log("Generating T-shirt design with prompt:", designPrompt);
 
