@@ -20,31 +20,53 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // Build a detailed prompt for 3D T-shirt design generation
-    const designPrompt = `Create a high-quality, professional T-shirt design with 3D visual elements and depth.
+    // Build a detailed prompt for realistic photographed T-shirt product image
+    const designPrompt = `Generate a highly realistic T-shirt product photograph, NOT a flat mockup or illustration.
 
-DESIGN SPECIFICATIONS:
+PRODUCT PHOTOGRAPHY REQUIREMENTS:
+- Real photographed cotton fabric with natural folds, wrinkles, and fabric texture
+- Visible stitching details on collar, sleeves, and hem
+- Realistic round neck collar shape with ribbed texture
+- Soft cotton fabric with matte finish appearance
+- Natural fabric creases and draping
+- Studio product photography lighting with soft shadows
+- Clean dark or neutral gradient background
+- Camera angle: straight front view with slight 3D perspective
+- Professional e-commerce product photo quality
+- High resolution with realistic shadows and highlights
+
+T-SHIRT SPECIFICATIONS:
+- T-shirt color: ${tshirtColor}
+- Fit: modern regular fit
+- Style: classic crew neck
+
+PRINTED DESIGN ON SHIRT:
 - Theme: ${theme}
-- Main text/concept: "${mainIdea}"
+- Main concept/text: "${mainIdea}"
 - Target audience: ${targetAudience}
 - Mood & style: ${mood}
-- Art style: ${artStyle} with 3D effects, depth, and dimensionality
+- Art style: ${artStyle}
 - Color palette: ${colorPalette}
-- Typography: ${typography} style with 3D embossed or raised effect
+- Typography: ${typography}
 
-TECHNICAL REQUIREMENTS:
-- Create a centered, print-ready design
-- Add 3D depth, shadows, and dimensional effects to make elements pop
-- Use clean vector-style artwork with professional 3D rendering
-- Design should look striking on a ${tshirtColor} T-shirt
-- Include subtle gradients and lighting to enhance the 3D effect
-- Make text appear raised or embossed with realistic shadows
-- No background - transparent/isolated design only
-- Visually striking and trendy design
-- Keep it readable from a distance
-- Ultra high resolution, print-ready quality
+CRITICAL PRINT RULES:
+- Design must be printed directly on the fabric using realistic screen-print/DTG printing style
+- Print should slightly blend with the fabric texture
+- Print should follow and curve naturally with the fabric folds
+- Colors should be slightly muted to match real ink on fabric
+- NO poster-like or sticker-like appearance
+- NO sharp rectangular edges around the design
+- NO floating poster effect
+- NO flat vector mockup look
+- Design should look like it was actually printed on real cotton
 
-The design should have depth and dimension, looking like it could leap off the shirt. Use professional 3D rendering techniques like drop shadows, highlights, bevels, and perspective to create a premium look.`;
+DESIGN PLACEMENT:
+- Bold, centered on the chest area
+- Well balanced and clearly readable
+- Typography looks professionally screen-printed
+- Design integrates naturally with the shirt fabric
+
+Generate a photorealistic product image that looks like an actual e-commerce product photo taken in a professional studio.`;
 
     console.log("Generating T-shirt design with prompt:", designPrompt);
 
