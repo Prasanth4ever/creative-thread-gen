@@ -73,6 +73,14 @@ export const tshirtColors = [
   { value: "maroon", label: "Maroon", hex: "#800000" },
 ];
 
+export const bodySizes = [
+  { value: "S", label: "S", description: "Small" },
+  { value: "M", label: "M", description: "Medium" },
+  { value: "L", label: "L", description: "Large" },
+  { value: "XL", label: "XL", description: "Extra Large" },
+  { value: "XXL", label: "XXL", description: "2X Large" },
+];
+
 export const examplePrompts: ExamplePrompt[] = [
   {
     id: "motivation",
@@ -87,6 +95,7 @@ export const examplePrompts: ExamplePrompt[] = [
       colorPalette: "black, white, red",
       typography: "bold sans-serif",
       tshirtColor: "black",
+      bodySize: "L",
     },
   },
   {
@@ -102,6 +111,7 @@ export const examplePrompts: ExamplePrompt[] = [
       colorPalette: "white and yellow",
       typography: "rounded playful",
       tshirtColor: "black",
+      bodySize: "M",
     },
   },
   {
@@ -117,6 +127,7 @@ export const examplePrompts: ExamplePrompt[] = [
       colorPalette: "black & white",
       typography: "graffiti",
       tshirtColor: "black",
+      bodySize: "L",
     },
   },
   {
@@ -132,6 +143,7 @@ export const examplePrompts: ExamplePrompt[] = [
       colorPalette: "black & white",
       typography: "modern minimal",
       tshirtColor: "black",
+      bodySize: "M",
     },
   },
 ];

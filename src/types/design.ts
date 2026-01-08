@@ -7,6 +7,7 @@ export interface DesignFormData {
   colorPalette: string;
   typography: string;
   tshirtColor: string;
+  bodySize: string;
 }
 
 export interface ExamplePrompt {

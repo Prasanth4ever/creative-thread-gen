@@ -7,9 +7,9 @@ import {
   colorPalettes,
   typographyStyles,
   tshirtColors,
+  bodySizes,
 } from "@/data/designOptions";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -173,23 +173,47 @@ export function DesignForm({
         </div>
       </div>
 
-      {/* T-shirt Color */}
-      <div className="space-y-3">
-        <Label className="text-sm font-medium text-foreground">T-Shirt Color</Label>
-        <div className="flex gap-3">
-          {tshirtColors.map((color) => (
-            <button
-              key={color.value}
-              onClick={() => onChange({ tshirtColor: color.value })}
-              className={`w-10 h-10 rounded-full border-2 transition-all duration-200 ${
-                formData.tshirtColor === color.value
-                  ? "border-primary scale-110 shadow-lg"
-                  : "border-border hover:border-muted-foreground"
-              }`}
-              style={{ backgroundColor: color.hex }}
-              title={color.label}
-            />
-          ))}
+      {/* T-shirt Color & Body Size Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* T-shirt Color */}
+        <div className="space-y-3">
+          <Label className="text-sm font-medium text-foreground">T-Shirt Color</Label>
+          <div className="flex gap-3">
+            {tshirtColors.map((color) => (
+              <button
+                key={color.value}
+                onClick={() => onChange({ tshirtColor: color.value })}
+                className={`w-9 h-9 rounded-full border-2 transition-all duration-200 ${
+                  formData.tshirtColor === color.value
+                    ? "border-primary scale-110 shadow-lg ring-2 ring-primary/30"
+                    : "border-border hover:border-muted-foreground"
+                }`}
+                style={{ backgroundColor: color.hex }}
+                title={color.label}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Body Size */}
+        <div className="space-y-3">
+          <Label className="text-sm font-medium text-foreground">Body Size</Label>
+          <div className="flex gap-2">
+            {bodySizes.map((size) => (
+              <button
+                key={size.value}
+                onClick={() => onChange({ bodySize: size.value })}
+                className={`min-w-[44px] h-10 px-3 rounded-lg font-semibold text-sm transition-all duration-200 ${
+                  formData.bodySize === size.value
+                    ? "bg-primary text-primary-foreground shadow-lg scale-105"
+                    : "bg-secondary text-muted-foreground hover:bg-muted hover:text-foreground border border-border"
+                }`}
+                title={size.description}
+              >
+                {size.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
