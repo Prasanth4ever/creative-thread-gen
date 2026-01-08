@@ -24,19 +24,21 @@ export function TshirtMockup({ tshirtColor, designImage, isGenerating, bodySize 
   const isLightShirt = tshirtColor === "white";
 
   return (
-    <div className="relative w-full max-w-md mx-auto">
-      {/* T-shirt container with proper aspect ratio */}
+    <div className="relative w-full h-full flex flex-col items-center justify-center">
+      {/* T-shirt container that fills the available space */}
       <div 
-        className="relative mx-auto transition-all duration-300"
+        className="relative transition-all duration-300 flex items-center justify-center"
         style={{
-          width: `${85 * multiplier.width}%`,
-          maxWidth: "380px",
+          width: "100%",
+          height: "100%",
+          maxWidth: "320px",
+          transform: `scale(${multiplier.width})`,
         }}
       >
         <svg
           viewBox="0 0 400 480"
-          className="w-full h-auto drop-shadow-2xl"
-          style={{ filter: "drop-shadow(0 10px 30px rgba(0,0,0,0.3))" }}
+          className="w-full h-auto max-h-[350px]"
+          style={{ filter: "drop-shadow(0 8px 20px rgba(0,0,0,0.25))" }}
         >
           <defs>
             {/* Fabric texture gradient */}
