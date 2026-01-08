@@ -1,6 +1,13 @@
+import { User } from "@supabase/supabase-js";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 
+interface HeaderProps {
+  user?: User | null;
+  onSignOut?: () => void;
+}
 
-export function Header() {
+export function Header({ user, onSignOut }: HeaderProps) {
   return (
     <header className="py-6 px-4 border-b border-border">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -34,9 +41,23 @@ export function Header() {
           </div>
         </div>
         
-        <div className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground">
-          <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          Ready to create
+        <div className="flex items-center gap-4">
+          {user && (
+            <div className="hidden sm:flex items-center gap-3">
+              <span className="text-sm text-muted-foreground truncate max-w-[150px]">
+                {user.email}
+              </span>
+              <Button variant="ghost" size="sm" onClick={onSignOut}>
+                <LogOut className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
+          {!user && (
+            <div className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              Ready to create
+            </div>
+          )}
         </div>
       </div>
     </header>
