@@ -5,8 +5,26 @@ export function Header() {
     <header className="py-6 px-4 border-b border-border">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-orange-400 flex items-center justify-center text-lg font-bold text-primary-foreground">
-            TD
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-orange-400 flex items-center justify-center p-1.5">
+            <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-primary-foreground">
+              {/* T-shirt shape */}
+              <path 
+                d="M20 7L16 3H8L4 7L6 9L8 8V20H16V8L18 9L20 7Z" 
+                fill="currentColor"
+                stroke="currentColor"
+                strokeWidth="0.5"
+                strokeLinejoin="round"
+              />
+              {/* Design brush stroke */}
+              <path 
+                d="M10 12L14 12M10 15L13 15" 
+                stroke="hsl(var(--primary))"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+              {/* Sparkle accent */}
+              <circle cx="17" cy="5" r="1" fill="currentColor" className="animate-pulse"/>
+            </svg>
           </div>
           <div>
             <h1 className="text-xl font-display font-bold gradient-text">
