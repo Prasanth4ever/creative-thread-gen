@@ -19,6 +19,7 @@ const initialFormData: DesignFormData = {
   colorPalette: "black & white",
   typography: "bold sans-serif",
   tshirtColor: "black",
+  bodySize: "L",
 };
 
 export default function Index() {
@@ -167,6 +168,7 @@ export default function Index() {
                 tshirtColor={formData.tshirtColor}
                 designImage={designImage}
                 isGenerating={isGenerating}
+                bodySize={formData.bodySize}
               />
             </div>
 
